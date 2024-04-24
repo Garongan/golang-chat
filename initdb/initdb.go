@@ -1,4 +1,4 @@
-package initDB
+package initdb
 
 import (
 	"fmt"
