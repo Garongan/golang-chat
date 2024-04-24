@@ -1,110 +1,67 @@
 package initDB
 
 import (
-	"database/sql"
 	"fmt"
+	"time"
 
+	"github.com/google/uuid"
 	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-type User struct {
-	ID       string `json:"id"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Phone    string `json:"phone"`
+type Users struct {
+	ID        uuid.UUID `gorm:"type:uuid;primaryKey;"`
+	Username  string    `gorm:"unique;not null"`
+	Password  string    `gorm:"not null"`
+	Phone     string    `gorm:"unique;not null"`
+	CreatedAt time.Time
 }
 
-type Message struct {
-	ID         string `json:"id"`
-	SenderID   string `json:"sender_id"`
-	ReceiverID string `json:"receiver_id"`
-	Content    string `json:"content"`
-	TimeStamp  string `json:"timestamp"`
+type Messages struct {
+	ID         uuid.UUID `gorm:"type:uuid;primaryKey;"`
+	SenderID   Users     `gorm:"foreignKey:ID"`
+	ReceiverID Users     `gorm:"foreignKey:ID"`
+	Status     string    `gorm:"default:'unread'"`
+	Message    string
+	SendAt     time.Time
+	ReadAt     time.Time
 }
 
-type Group struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+type Attachments struct {
+	ID        uuid.UUID `gorm:"type:uuid;primaryKey;"`
+	MessageID Messages  `gorm:"foreignKey:ID"`
+	Type      string
+	Url       string
+	UploadAt  time.Time
 }
 
-type GroupMember struct {
-	ID        string `json:"id"`
-	UserID    string `json:"user_id"`
-	Content   string `json:"content"`
-	CreatedAt string `json:"created_at"`
+type Groups struct {
+	ID        uuid.UUID `gorm:"type:uuid;primaryKey;"`
+	CreatedBy Users     `gorm:"foreignKey:ID"`
+	Name      string
+	CreatedAt time.Time
 }
 
-type File struct {
-	ID        string `json:"id"`
-	UserID    string `json:"user_id"`
-	Filename  string `json:"filename"`
-	Filtetype string `json:"filetype"`
-	Size      string `json:"size"`
-	SharedAt  string `json:"shared_at"`
+type GroupMembers struct {
+	ID      uuid.UUID `gorm:"type:uuid;primaryKey;"`
+	GroupID Groups    `gorm:"foreignKey:ID"`
+	UserID  Users     `gorm:"foreignKey:ID"`
+	Role    string    `gorm:"default:'member'"`
 }
 
 func InitDb() {
-	db, err := sql.Open("postgres", "host=localhost port=5432 dbname=go_chat_db user=postgres password=postgres")
+	// connect to the postgres db using gorm
+	dbName := "go_chat_db"
+	connection := "host=localhost user=postgres password=postgres dbname=" + dbName + " port=5432 sslmode=disable"
+	db, err := gorm.Open(postgres.Open(connection), &gorm.Config{})
 	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
-
-	// create user table
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS users (
-		id SERIAL PRIMARY KEY,
-		username VARCHAR(50) NOT NULL,
-		password VARCHAR(50) NOT NULL,
-		phone VARCHAR(15) NOT NULL
-	)`)
-	if err != nil {
-		panic(err)
+		panic("failed to connect database")
 	}
 
-	// create message table
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS messages (
-		id SERIAL PRIMARY KEY,
-		sender_id INT NOT NULL,
-		receiver_id INT NOT NULL,
-		content TEXT NOT NULL,
-		timestamp TIMESTAMP NOT NULL
-	)`)
-	if err != nil {
-		panic(err)
+	// migration database schema
+	if err := db.AutoMigrate(&Attachments{}, &Messages{}, &GroupMembers{}, &Groups{}, &Users{}); err != nil {
+		panic("failed to migrate database schema")
 	}
-
-	// create group table
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS groups (
-		id SERIAL PRIMARY KEY,
-		name VARCHAR(50) NOT NULL
-	)`)
-	if err != nil {
-		panic(err)
-	}
-
-	// create group_member table
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS group_members (
-		id SERIAL PRIMARY KEY,
-		user_id INT NOT NULL,
-		group_id INT NOT NULL,
-		created_at TIMESTAMP NOT NULL
-	)`)
-	if err != nil {
-		panic(err)
-	}
-
-	// create file table
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS files (
-		id SERIAL PRIMARY KEY,
-		user_id INT NOT NULL,
-		filename VARCHAR(50) NOT NULL,
-		filetype VARCHAR(50) NOT NULL,
-		size VARCHAR(50) NOT NULL,
-		shared_at TIMESTAMP NOT NULL
-	)`)
-	if err != nil {
-		panic(err)
-	}
-
 	fmt.Println("Database initialized successfully")
 }
