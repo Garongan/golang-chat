@@ -3,24 +3,6 @@
 
 Project golang untuk membuat schema dari basic chat system dengan database postgreSQL
 
-
-## Environment Variables Package initdb
-
-Konfigurasi default untuk menjalankan package initDB adalah: (Perlu diperhatikan package ini akan membuat otomatis tabel baru dan relasinya ketika semua variable terpenuhi)
-
-`host = localhost`
-
-`port = 5432`
-
-`dbname = go_chat_api`
-
-`user = postgres`
-
-`password = postgres`
-
-`user = postgres`
-
-
 ## Run Locally
 
 Clone the project
@@ -40,6 +22,25 @@ Start the the project
 ```bash
   go run .
 ```
+
+## Environment Variables Package initdb
+
+Konfigurasi default untuk menjalankan package initDB adalah: (Perlu diperhatikan package ini akan membuat otomatis tabel baru dan relasinya ketika semua variable terpenuhi)
+
+`host = localhost`
+
+`port = 5432`
+
+`dbname = go_chat_api`
+
+`user = postgres`
+
+`password = postgres`
+
+`user = postgres`
+
+## Erd dari database schema
+![erd go_chat_db](erd.png)
 
 
 ## Usage/Examples initdb package

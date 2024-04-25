@@ -10,44 +10,57 @@ import (
 	"gorm.io/gorm"
 )
 
-type Users struct {
-	ID        uuid.UUID `gorm:"type:uuid;primaryKey;"`
-	Username  string    `gorm:"unique;not null"`
-	Password  string    `gorm:"not null"`
-	Phone     string    `gorm:"unique;not null"`
-	CreatedAt time.Time
+type User struct {
+	ID            uuid.UUID
+	Username      string `gorm:"unique;not null"`
+	Password      string `gorm:"not null"`
+	Phone         string `gorm:"unique;not null"`
+	CreatedAt     time.Time
+	Conversations []Conversation
 }
 
-type Messages struct {
-	ID         uuid.UUID `gorm:"type:uuid;primaryKey;"`
-	SenderID   Users     `gorm:"foreignKey:ID"`
-	ReceiverID Users     `gorm:"foreignKey:ID"`
-	Status     string    `gorm:"default:'unread'"`
-	Message    string
-	SendAt     time.Time
-	ReadAt     time.Time
+type Message struct {
+	ID             uuid.UUID
+	Status         string `gorm:"default:'unread'"`
+	Body           string
+	SendAt         time.Time
+	ReadAt         time.Time
+	UserID         string
+	User           User
+	ConversationID string
 }
 
-type Attachments struct {
-	ID        uuid.UUID `gorm:"type:uuid;primaryKey;"`
-	MessageID Messages  `gorm:"foreignKey:ID"`
+type Attachment struct {
+	ID        uuid.UUID
 	Type      string
 	Url       string
 	UploadAt  time.Time
+	MessageID string
+	Message   Message
 }
 
-type Groups struct {
-	ID        uuid.UUID `gorm:"type:uuid;primaryKey;"`
-	CreatedBy Users     `gorm:"foreignKey:ID"`
+type Conversation struct {
+	ID       uuid.UUID
+	UserID   string
+	User     User
+	Messages []Message
+}
+
+type Group struct {
+	ID        uuid.UUID
+	UserID    string
+	User      User
 	Name      string
 	CreatedAt time.Time
 }
 
 type GroupMembers struct {
-	ID      uuid.UUID `gorm:"type:uuid;primaryKey;"`
-	GroupID Groups    `gorm:"foreignKey:ID"`
-	UserID  Users     `gorm:"foreignKey:ID"`
-	Role    string    `gorm:"default:'member'"`
+	ID      uuid.UUID
+	GroupID string
+	Group   Group
+	UserID  string
+	User    User
+	Role    string `gorm:"default:'member'"`
 }
 
 func InitDb() {
@@ -60,7 +73,7 @@ func InitDb() {
 	}
 
 	// migration database schema
-	if err := db.AutoMigrate(&Attachments{}, &Messages{}, &GroupMembers{}, &Groups{}, &Users{}); err != nil {
+	if err := db.AutoMigrate(&Message{}, &Attachment{}, &Message{}, &User{}, &GroupMembers{}, &Group{}); err != nil {
 		panic("failed to migrate database schema")
 	}
 	fmt.Println("Database initialized successfully")
