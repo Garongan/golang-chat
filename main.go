@@ -8,12 +8,12 @@ import (
 
 func main() {
 
-	// create database schema for basic chat messaging system with postgresql
+	// membuat database schema untuk basic chat messaging system dengan postgresql
 	initdb.InitDb()
 
 	// get max profit from stock prices
-	stokPrices := []int{3, 2, 6, 5, 1, 3} // sample price stok list of each day
-	maxTransaction := 2 // maximum transaction allowed
+	stokPrices := []int{3, 2, 6, 5, 1, 3} // sample price dari saham pada setiap harinya
+	maxTransaction := 2 // transaksi maksimal yang diperbolehkan
 
 	maxprofit := maxprofit.MaxProfit(stokPrices, maxTransaction)
 
