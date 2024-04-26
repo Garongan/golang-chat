@@ -2,18 +2,16 @@ package main
 
 import (
 	"fmt"
-	"golang-chat/initdb"
 	"golang-chat/maxprofit"
 )
 
 func main() {
 
 	// membuat database schema untuk basic chat messaging system dengan postgresql
-	initdb.InitDb()
 
 	// get max profit from stock prices
 	stokPrices := []int{3, 2, 6, 5, 1, 3} // sample price dari saham pada setiap harinya
-	maxTransaction := 2 // transaksi maksimal yang diperbolehkan
+	maxTransaction := 2                   // transaksi maksimal yang diperbolehkan
 
 	maxprofit := maxprofit.MaxProfit(stokPrices, maxTransaction)
 
