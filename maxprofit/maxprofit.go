@@ -9,9 +9,9 @@ func MaxProfit(prices []int, maxTransaction int) int {
 
 	// pembelian saham pertama
 	buy := prices[0]
+	transaction := 0
 	for index, price := range prices {
-		transaction := 0
-		if transaction < maxTransaction && index+1 < len(prices) && buy != 0 && buy < price {
+		if transaction <= maxTransaction && index+1 < len(prices) && buy != 0 && buy < price {
 			// penjualan => profit bertambah
 			profitTemp := price - buy
 			transaction++

@@ -2,6 +2,7 @@ package initdb
 
 import (
 	"fmt"
+	"gorm.io/gorm/schema"
 	"time"
 
 	"github.com/google/uuid"
@@ -67,7 +68,7 @@ func InitDb() {
 	// connect to the postgres db using gorm
 	dbName := "go_chat_db"
 	connection := "host=localhost user=postgres password=postgres dbname=" + dbName + " port=5432 sslmode=disable"
-	db, err := gorm.Open(postgres.Open(connection), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(connection), &gorm.Config{NamingStrategy: schema.NamingStrategy{SingularTable: true}})
 	if err != nil {
 		panic("failed to connect database")
 	}

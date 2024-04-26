@@ -50,6 +50,8 @@ Konfigurasi default untuk menjalankan package initDB adalah: (Perlu diperhatikan
 
 import "golang-chat/initdb"
 
+// akan membuat table baru di database sesuai dengan schema yang sudah ditentukan, 
+// apabila sudah terdapat table dengan nama yang sama maka tetap membuat table baru
 initdb.InitDb()
 // expected output: Database initialized successfully
 ```
