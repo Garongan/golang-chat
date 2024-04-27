@@ -4,12 +4,12 @@
 
 ```json
 {
-  "_id": ObjectId("user_1"),
+  "_id": "user_1",
   "name": "John Doe",
   "phone_number": "+1234567890",
   "password": "hashed_password",
-  "created_at": ISODate("2022-01-01T00:00:00.000Z"),
-  "updated_at": ISODate("2022-01-01T12:00:00.000Z")
+  "created_at": "2022-01-01T00:00:00.000Z",
+  "updated_at": "2022-01-01T12:00:00.000Z"
 }
 ```
 
@@ -28,11 +28,11 @@
       "content": "Halo, apa kabar?",
       "timestamp": "2022-01-01T08:00:00.000Z",
       "status": "sent",
-      "attachment": {
+      "attachment": [{
         "name": "greet.jpg",
         "type": "image",
         "url": "https://dummyimage.com/600x400/000/fff&text=Halo,+apa+kabar?"
-      }
+      }]
     },
     {
       "_id": "message_2",
@@ -64,11 +64,11 @@
       "content": "Bangun woy!!!",
       "timestamp": "2022-01-01T08:00:00.000Z",
       "status": "sent",
-      "attachment": {
+      "attachment": [{
         "file_name": "image1.jpg",
         "type": "image",
         "url": "https://dummyimage.com/600x400/000/fff&text=Bangun+woy!!!"
-      }
+      }]
     },
     {
       "_id": "message_2",
