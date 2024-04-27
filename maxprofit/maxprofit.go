@@ -5,7 +5,7 @@ import (
 	"math"
 )
 
-func MaxProfit(prices []int, maxTransaction int) int {
+func MaxProfitDp(prices []int, maxTransaction int) int {
 	// kondisi ketika maxTransaction lebih besar atau sama dengan setengat dari panjang prices
 	// dilakukan seluruh transaksi setiap hari
 	if maxTransaction >= len(prices)/2 {
