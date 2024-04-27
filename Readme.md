@@ -38,5 +38,5 @@ maxprofit := maxprofit.MaxProfit(stokPrices, maxTransaction)
 
 // Menghitung dan mencetak keuntungan maksimal
 fmt.Println("Keuntungan maksimal yang dapat diperoleh:", maxprofit)
-// expected output: 3
+// expected output: 6
 ```
