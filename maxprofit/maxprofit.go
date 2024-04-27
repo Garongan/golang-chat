@@ -1,32 +1,36 @@
 package maxprofit
 
+import (
+	"fmt"
+	"math"
+)
+
 func MaxProfit(prices []int, maxTransaction int) int {
-	profit := 0
-	if len(prices) == 1 {
-		// tidak ada keuntungan
-		return profit
+	if maxTransaction >= len(prices)/2 {
+		hold := -prices[0]
+		sell := 0
+
+		for i := 0; i < len(prices); i++ {
+			hold = max(hold, sell-prices[i])
+			sell = max(sell, hold+prices[i])
+			fmt.Println(sell)
+		}
+
+		return sell
 	}
 
-	// pembelian saham pertama
-	buy := prices[0]
-	transaction := 0
-	for index, price := range prices {
-		if transaction <= maxTransaction && index+1 < len(prices) && buy != 0 && buy < price {
-			// penjualan => profit bertambah
-			profitTemp := price - buy
-			transaction++
+	matriksProfit := make([][]int, maxTransaction+1)
+	for i := range matriksProfit {
+		matriksProfit[i] = make([]int, len(prices))
+	}
 
-			if profitTemp > profit {
-				profit = profitTemp
-			}
-
-			if profit > price {
-				buy = prices[index+1]
-			} else {
-				buy = 0
-			}
+	for i := 1; i <= maxTransaction; i++ {
+		hold := math.MinInt32
+		for j := 1; j < len(prices); j++ {
+			hold = max(hold, matriksProfit[i-1][j-1] - prices[j-1])
+			matriksProfit[i][j] = max(matriksProfit[i][j-1], hold + prices[j])
 		}
 	}
 
-	return profit
+	return matriksProfit[maxTransaction][len(prices)-1]
 }
